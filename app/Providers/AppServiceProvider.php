@@ -3,6 +3,7 @@
 namespace App\Providers;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
 use App\Models\User;
 
 use Illuminate\Support\ServiceProvider;
