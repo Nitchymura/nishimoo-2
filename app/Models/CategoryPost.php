@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CategoryPost extends Model
 {
-    protected $table = 'category_post';
+    protected $table = 'pivot_category_post';
     public $timestamps = false;
     protected $fillable = ['category_id', 'post_id'];
     
