@@ -9,16 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up()
+{
+    if (!Schema::hasTable('pivot_category_post')) {
         Schema::create('pivot_category_post', function (Blueprint $table) {
             $table->unsignedBigInteger('post_id');
             $table->unsignedBigInteger('category_id');
-
-            $table->foreign('post_id')->references('id')->on('post')->onDelete('cascade');
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
         });
     }
+}
+
 
     /**
      * Reverse the migrations.
