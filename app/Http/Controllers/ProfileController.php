@@ -35,7 +35,7 @@ class ProfileController extends Controller
             'avatar' => 'max:1048|mimes:jpeg,jpg,png,gif',
             'name' => 'required|max:50',
             'email' => 'required|max:50|email|unique:users,email,'.Auth::user()->id,
-            'introduction' => 'max:150'
+            'introduction' => 'max:1500'
         ]);
 
         $user_a = $this->user->findOrFail(Auth::user()->id);
