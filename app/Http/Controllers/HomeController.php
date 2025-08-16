@@ -50,11 +50,11 @@ public function index(Request $request)
     // 並び替え
     switch ($sort) {
         case 'oldest':
-            $query->orderBy('created_at', 'asc');
+            $query->orderBy('term_start', 'asc');
             break;
         case 'latest':
         default:
-            $query->orderBy('created_at', 'desc');
+            $query->orderBy('term_start', 'desc');
             break;
     }
 
