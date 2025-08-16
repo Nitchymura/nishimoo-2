@@ -23,6 +23,7 @@
                     <i class="fa-solid fa-ellipsis"></i>
                 </button>
 
+            @auth
                 @if($post->user_id == Auth::user()->id)
                     <div class="dropdown-menu">
                         {{-- edit--}}
@@ -54,6 +55,7 @@
                         </div>
                     @endif 
                 @endif
+            @endauth
             </div>
         </div>
         

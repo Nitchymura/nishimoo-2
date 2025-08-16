@@ -7,7 +7,7 @@
 
     @if($user->follows->isNotEmpty())
         <div class="row justify-content-center">
-            <div class="col-4">
+            <div class="col-md-8 col-sm-8">
                 <h4 class="h5 text-center text-secondary">Following</h4>
 
                 @foreach($user->follows as $follow)
@@ -32,12 +32,12 @@
                                     <form action="{{ route('follow.delete', $follow->followed->id) }}" method="post">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn p-0 bg-transparent text-secondary">Following</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary bg-transparent text-secondary">Following</button>
                                     </form>
                                 @else
                                     <form action="{{ route('follow.store', $follow->followed->id) }}" method="post">
                                         @csrf
-                                        <button type="submit" class="btn p-0 bg-transparent text-primary">Follow</button>
+                                        <button type="submit" class="btn bg-transparent text-primary">Follow</button>
                                     </form>
                                 @endif
                             @endif

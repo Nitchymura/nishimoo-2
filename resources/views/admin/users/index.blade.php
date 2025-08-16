@@ -1,17 +1,18 @@
-@extends('layouts.app')
+@extends('admin.menu')
 
 @section('title', 'Admin: Users')
 
-@section('content')
+@section('sub_content')
     <form action="{{ route('admin.users') }}" method="get">
-        <input type="text" name="search" placeholder="search..." class="form-control form-control-sm w-25 mb-3 ms-auto">
+        <input type="text" name="search" placeholder="search..." class="form-control form-control-sm w-25 my-3 ms-auto">
     </form>
-    <table class="table border bg-qhite table-hover align-middle text-secondary">
+    <table class="table border bg-white table-hover align-middle text-secondary">
         <thead class="table-success text-secondary text-uppercase small">
             <tr>
                 <th></th>
                 <th>Name</th>
-                <th>email</th>
+                <th>Role ID</th>
+                <th>e mail</th>
                 <th>created at</th>
                 <th>status</th>
                 <th></th>
@@ -28,6 +29,16 @@
                         @endif
                     </td>
                     <td><a href="{{ route('profile.show', $user->id) }}" class="text-decoration-none text-dark fw-bold">{{ $user->name }}</a></td>
+                    <td class="ps-4">
+                        @if($user->id != 1)
+                            <button class="dropdown-item text-primary" data-bs-toggle="modal" data-bs-target="#user-roleid{{ $user->id }}">
+                                {{ $user->role_id }}
+                        </button>
+                        @include('admin.users.modals.role-id')
+                        @else
+                            {{ $user->role_id }}
+                        @endif
+                    </td>
                     <td>{{ $user->email }}</td>
                     <td>
                         {{date('M d, Y H:m:s', strtotime($user->created_at))}}
@@ -73,5 +84,60 @@
         </tbody>
     </table>
     {{ $all_users->links() }}
+
+    <hr>
+    <h3>User Role Permissions Table</h3>
+    <table class="table border bg-white align-middle text-secondary text-center">
+        <thead class="table-info text-secondary text-uppercase small">
+            <tr>
+                <th>role id</th>
+                <th>class</th>
+                <th>Admin page</th>
+                <th>Post</th>
+                <th>home page</th>
+                <th>post page</th>
+                <th>like, comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="text-center">
+                <td>1</td>
+                <td>Admin</td>
+                <td><i class="fa-regular fa-circle "></i></td>
+                <td><i class="fa-regular fa-circle"></i></td>
+                <td><i class="fa-regular fa-circle"></i></td>
+                <td><i class="fa-regular fa-circle"></i></td>
+                <td><i class="fa-regular fa-circle"></i></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>User</td>
+                <td><i class="fa-solid fa-xmark"></i></td>
+                <td><i class="fa-regular fa-circle"></i></td>
+                <td><i class="fa-regular fa-circle"></i></td>
+                <td><i class="fa-regular fa-circle"></i></td>
+                <td><i class="fa-regular fa-circle"></i></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Guest</td>
+                <td><i class="fa-solid fa-xmark"></i></td>
+                <td><i class="fa-solid fa-xmark"></i></td>
+                <td><i class="fa-regular fa-circle"></i></td>
+                <td><i class="fa-regular fa-circle"></i></td>
+                <td><i class="fa-regular fa-circle"></i></td>
+            </tr>
+            <tr>
+                <td>-</td>
+                <td>Not User</td>
+                <td><i class="fa-solid fa-xmark"></i></td>
+                <td><i class="fa-solid fa-xmark"></i></td>
+                <td><i class="fa-regular fa-circle"></i></td>
+                <td><i class="fa-solid fa-xmark"></i></td>
+                <td><i class="fa-solid fa-xmark"></i></td>
+            </tr>
+            
+        </tbody>
+    </table>
 
 @endsection

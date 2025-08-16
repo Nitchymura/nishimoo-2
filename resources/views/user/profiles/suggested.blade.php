@@ -3,18 +3,21 @@
 @section('title', 'Suggested Users')
 
 @section('content')
-    <div class="row justify-content-center">
-        <div class="col-6">
-            <h4 class="h3 text-center text-secondary mb-3">Suggested</h4>
+
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6 col-sm-8 mt-5">
+            <h4 class="h3 text-center text-secondary mb-3">Suggested Users</h4>
        
         @forelse($suggested_users as $user)
             <div class="row mb-3">
                 <div class="col-auto my-auto">
+                    <a href="{{ route('profile.show', $user->id) }}">
                     @if($user->avatar)
                         <img src="{{ $user->avatar }}" alt="" class="rounded-circle avatar-md d-block mx-auto">
                     @else
                         <i class="fa-solid fa-circle-user text-secondary icon-md d-block text-center"></i>
                     @endif
+                    </a>
                 </div>
                 <div class="col">
                     {{-- 名前（リンク） --}}
@@ -56,7 +59,7 @@
                 <div class="col-auto my-auto">
                     <form action="{{ route('follow.store', $user->id) }}" method="post">
                         @csrf
-                        <button type="submit" class="btn p-0 bg-transparent text-primary">Follow</button>
+                        <button type="submit" class="btn btn-sm btn-primary fw-bold">Follow</button>
                     </form>
                 </div>
             </div>

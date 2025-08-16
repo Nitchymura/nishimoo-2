@@ -52,6 +52,13 @@ class ProfileController extends Controller
         return redirect()->route('profile.show',Auth::user()->id);
     }
 
+    public function updateRoleID(Request $request, $user_id){
+        $user_a = $this->user->findOrFail($user_id);
+        $user_a->role_id = $request->role_id;
+
+        return redirect()->route('admin.users')->with('user', $user_a);
+    }
+
     public function followers($id){
         $user_a = $this->user->findOrFail($id);
 
@@ -62,6 +69,10 @@ class ProfileController extends Controller
         $user_a = $this->user->findOrFail($id);
 
         return view('user.profiles.following')->with('user', $user_a);
+    }
+
+    public function changePassword(){
+        return view('user.profiles.change-password');
     }
 
     public function updatePassword(Request $request){
@@ -89,6 +100,17 @@ class ProfileController extends Controller
         return redirect()->back()->with('success_password_change', 'Password successfully changed!');
 
     }
+    public function deleteAvatar(Request $request){
+        $user = Auth::user();
 
+        if ($user->avatar) {
+            $user->avatar = null;
+            $user->save();
+
+            return response()->json(['message' => 'Avatar deleted'], 200);
+        }
+
+        return response()->json(['message' => 'No avatar found'], 404);
+    }
 
 }

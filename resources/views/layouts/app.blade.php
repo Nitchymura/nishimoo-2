@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }} | @yield('title')</title>
+    <title>{{ config('app.name', 'NISHIMOO') }} | @yield('title')</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -25,21 +25,26 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
+                {{-- @guest --}}
+                <a class="navbar-brand" href="{{ route('home') }}">
+                    <img src="{{ asset('images/NISHIMOO.png') }}" alt="" class="nishimoo">
+                    {{-- {{ config('app.name', 'Laravel') }} --}}
                 </a>
+                {{-- @endguest --}}
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
+                    <ul class="navbar-nav ms-auto d-flex align-items-center h-100">
                         @auth
                             @if(!request()->is('admin/*'))
-                                <form action="{{ route('home') }}" method="get">
+                                <form action="{{ route('home') }}" method="get" class="d-flex align-items-center my-0">
                                     <input type="text" name="search" placeholder="search..." class="form-control form-control-sm">
                                 </form>
                             @endif
@@ -47,7 +52,7 @@
                     </ul>
 
                     <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
+                    <ul class="navbar-nav mobile-center ms-auto gap-2">
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
@@ -71,72 +76,59 @@
                         </li>
 
                         {{-- CREATE POST --}}
+                        @if(Auth::user()->role_id == 1 || Auth::user()->role_id ==  2)
                         <li class="nav-item">
                             <a href="{{ route('post.create') }}" class="nav-link">
                                 <i class="fa-solid fa-circle-plus text-secondary icon-sm"></i>
                             </a>
                         </li>
+                        @endif
                         
                         <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link btn" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{-- DROPDOWN --}}
-                                    @if(Auth::user()->avatar)
-                                        <img src="{{ Auth::user()->avatar }}" alt="" class="rounded-circle avatar-sm">
-                                    @else
+                            <a id="navbarDropdown" class="nav-link btn" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                {{-- DROPDOWN --}}
+                                @if(Auth::user()->avatar)
+                                    <img src="{{ Auth::user()->avatar }}" alt="" class="rounded-circle avatar-sm">
+                                @else
                                     <i class="fa-solid fa-circle-user text-secondary icon-sm"></i>
-                                    @endif
+                                @endif
+                            </a>
+
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                                {{-- ADMIN --}}
+                                @can('admin')
+                                <a href="{{ route('admin.users') }}" class="dropdown-item">
+                                    <i class="fa-solid fa-user-gear"></i> Admin
+                                </a>
+                                
+                                <hr class="dropdown-divider">
+                                @endcan
+                                {{-- PROFILE --}}
+                                <a href="{{ route('profile.show', Auth::user()->id) }}" class="dropdown-item">
+                                    <i class="fa-solid fa-circle-user"></i> Profile</a>
+                                
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault();
+                                                    document.getElementById('logout-form').submit();"><i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                    {{ __('Logout') }}
                                 </a>
 
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-
-                                    {{-- ADMIN --}}
-                                    @can('admin')
-                                    <a href="{{ route('admin.users') }}" class="dropdown-item">
-                                        <i class="fa-solid fa-user-gear"></i> Admin
-                                    </a>
-                                    
-                                    <hr class="dropdown-divider">
-                                    @endcan
-                                    {{-- PROFILE --}}
-                                    <a href="{{ route('profile.show', Auth::user()->id) }}" class="dropdown-item">
-                                        <i class="fa-solid fa-circle-user"></i> Profile</a>
-                                    
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();"><i class="fa-solid fa-arrow-right-from-bracket"></i>
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </div>
+                        </li>
                         @endguest
                     </ul>
                 </div>
             </div>
         </nav>
 
-        <main class="py-5">
+        <main class="mb-5">
             <div class="container">
-                <div class="row justify-content-center">
-                    @if(request()->is('admin/*'))
-                    <div class="col-3">
-                        <div class="list-group">
-                            <a href="{{ route('admin.users') }}" class="list-group-item {{ request()->is('admin/users*') ? 'active' : '' }}">
-                                <i class="fa-solid fa-users"></i> Users
-                            </a>
-                            <a href="{{ route('admin.posts') }}" class="list-group-item {{ request()->is('admin/posts*') ? 'active' : '' }}">
-                                <i class="fa-solid fa-newspaper"></i> Posts
-                            </a>
-                            <a href="{{ route('admin.categories') }}" class="list-group-item {{ request()->is('admin/categories*') ? 'active' : '' }}">
-                                <i class="fa-solid fa-tags"></i> Categories
-                            </a>
-                        </div>
-                    </div>
-                    @endif
-                    <div class="col-9">
+                <div class="row justify-content-center">                    
+                    <div class="col-12">
                         @yield('content')
                     </div>
                 </div>

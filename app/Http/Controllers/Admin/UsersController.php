@@ -25,6 +25,15 @@ class UsersController extends Controller
         return view('admin.users.index')->with('all_users', $all_users)->with('search', $request->search);
     }
 
+    public function updateRoleID(Request $request, $id){
+        $user_a = $this->user->findOrFail($id);
+        $user_a->role_id = $request->role_id;
+
+        $user_a->save();
+
+        return redirect()->route('admin.users')->with('user', $user_a);
+    }
+
     public function deactivate($id){
         $this->user->destroy($id);
         return redirect()->back();

@@ -17,15 +17,19 @@ class CategorySeeder extends Seeder
 
         $categories = [
             [
-                'name' => 'Current events',
+                'name' => 'Travel',
                 'updated_at' => NOW(),
                 'created_at' => NOW()
             ],[
-                'name' => 'Beauty',
+                'name' => 'Figure Skate',
                 'updated_at' => NOW(),
                 'created_at' => NOW()
             ],[
-                'name' => 'Wellness',
+                'name' => 'Beer',
+                'updated_at' => NOW(),
+                'created_at' => NOW()
+            ],[
+                'name' => 'Others',
                 'updated_at' => NOW(),
                 'created_at' => NOW()
             ]

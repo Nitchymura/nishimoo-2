@@ -1,17 +1,17 @@
-@extends('layouts.app')
+@extends('admin.menu')
 
 @section('title', 'Admin: Categories')
 
-@section('content')
+@section('sub_content')
     <form action="{{ route('admin.categories.store') }}" method="post" class="row gx-2 mb-4">
         @csrf       
-            <div class="col-4">
+            <div class="col-4 mt-3">
                 <input type="text" name="name" id="name" class="form-control " placeholder="Add a category..." value="{{old('name')}}">
                 @error('name')
                     <p class="mb-0 text-danger small">{{$message}}</p>
                 @enderror
             </div>     
-            <div class="col-auto">
+            <div class="col-auto mt-3">
                 <button type="submit" class="btn  btn-primary "><i class="fa-solid fa-plus"></i> Add</button>
             </div>   
         </form>

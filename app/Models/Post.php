@@ -29,4 +29,12 @@ class Post extends Model
     public function isLiked(){
         return $this->likes()->where('user_id', Auth::user()->id)->exists();
     }
+
+    public function postBodies(){
+        return $this->hasMany(PostBody::class);
+    }
+
+    public function categories(){
+        return $this->belongsToMany(Category::class, 'pivot_category_post', 'post_id', 'category_id');
+    }
 }

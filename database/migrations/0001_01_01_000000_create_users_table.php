@@ -20,8 +20,9 @@ return new class extends Migration
             $table->string('password');
             // $table->rememberToken();
             $table->text('introduction')->nullable();
-            $table->integer('role_id')->default(2)->comment('1:admin, 2:user');
+            $table->integer('role_id')->default(3)->comment('1:admin, 2:user');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

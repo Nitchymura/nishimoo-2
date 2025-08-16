@@ -3,8 +3,8 @@
 @section('title', 'Edit Profile')
 
 @section('content')
-    <div class="row sutify-content-center">
-        <div class="col-8">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8 col-sm-11">
             <form action="{{ route('profile.update') }}" method="post" class="shadow rounded-3 bg-white p-5 mb-5" enctype="multipart/form-data">
                 @csrf
                 @method('PATCH')
@@ -12,13 +12,30 @@
                 <div class="row mb-3">
                     <div class="col-4">
                         @if(Auth::user()->avatar)
-                            <img src="{{ Auth::user()->avatar }}" alt="" class="rounded-circle img-lg">
+                            <img src="{{ Auth::user()->avatar }}" alt="" id="avatar-preview" class="rounded-circle img-lg">
                         @else
-                            <i class="fa-solid fa-circle-user text-secondary icon-lg d-block text-center"></i>
+                            <i class="fa-solid fa-circle-user text-secondary icon-lg d-block text-center" id="user-icon"></i>
                         @endif
                     </div>
+
                     <div class="col align-self-end">
-                        <input type="file" name="avatar" id="avatar" class="form-control form-control-sm w-auto">
+                        <div class="row">
+                            <div class="col-auto">
+                                <!-- 画像ファイル選択 -->
+                                <input type="file" name="avatar" id="avatar" class="form-control form-control-sm w-auto" onchange="previewImage(event)">
+                            </div>
+                            <div class="col-1">
+                                @if(Auth::user()->avatar)
+                                <button type="button" class="btn btn-sm btn-danger delete-avatar-profile" id="delete-avatar" >
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- 画像削除フラグを隠しフィールドに設定 -->
+                        <input type="hidden" id="avatar-deleted" name="avatar_deleted" value="false">
+
                         <p class="mb-0 form-text">
                             Acceptable formats: jpeg, jpg, png, gif <br>
                             Max size is 1048 KB
@@ -27,8 +44,8 @@
                             <p class="mb-0 text-danger small">{{ $message }}</p>
                         @enderror
                     </div>
-
                 </div>
+
 
                 <label for="name" class="form-label fw-bold mt-3">Name</label>
                 <input type="text" name="name" id="name" value="{{ old('name', Auth::user()->name) }}" class="form-control">
@@ -42,45 +59,13 @@
                     <p class="mb-0 text-danger small">{{ $message }}</p>
                 @enderror
 
+                @if(Auth::user()->role_id == 1)
                 <label for="intro" class="form-label fw-bold mt-3">Introduction</label>
                 <textarea name="introduction" id="intro" rows="3" class="form-control">{{ old('introduction',Auth::user()->introduction) }}</textarea>
+                @endif
 
                 <button type="submit" class="btn btn-warning mt-3 px-5">Save</button>
             </form>
-
-            {{-- UPDATE PASSWORD --}}
-            <form action="{{ route('profile.update-password') }}" method="post" class="shadow rounded-3 bg-white p-5">
-                @csrf
-                @method('PATCH')
-                @if(session('success_password_change'))
-                    <p class="mb-3 text-success fw-bold">{{ session('success_password_change') }}</p>
-                @endif
-                <h2 class="h4 text-secondary mb-3">Update Password</h2>
-
-                <label for="old-password" class="form-label fw-bold">Old Password</label>
-                <input type="password" name="old_password" id="old-password" class="form-control">
-                @if(session('wrong_password_error'))
-                <p class="mb-0 text-danger small">{{ session('wrong_password_error') }}</p>
-                @endif
-
-                <label for="new-password" class="form-label fw-bold mt-3">New Password</label>
-                <input type="password" name="new_password" id="new-password" class="form-control">
-                @if(session('new_password_error'))
-                <p class="mb-0 text-danger small">{{ session('new_password_error') }}</p>
-                @endif
-                @error('new_password')
-                    <p class="mb-0 text-danger small">{{ $message }}</p>
-                @enderror
-
-                <label for="confirm-password" class="form-label fw-bold mt-3">Confirm New Password</label>
-                <input type="password" name="new_password_confirmation" id="confirm-password" class="form-control">
-
-                <input type="submit" value="Update Password" class="btn btn-warning px-5 mt-3">
-            </form>
-        </div>
-    </div>
-
-    
-
-
+<script src="{{ asset('js/edit-profile.js') }}"></script>
 @endsection
+

@@ -1,10 +1,10 @@
-@extends('layouts.app')
+@extends('admin.menu')
 
 @section('title', 'Admin: Posts')
 
-@section('content')
+@section('sub_content')
     <form action="{{ route('admin.posts') }}" method="get">
-        <input type="text" name="search" placeholder="search..." class="form-control form-control-sm w-25 mb-3 ms-auto">
+        <input type="text" name="search" placeholder="search..." class="form-control form-control-sm w-25 my-3 ms-auto">
     </form>
     <table class="table border bg-qhite table-hover align-middle text-secondary">
         <thead class="table-primary text-secondary text-uppercase small">
@@ -30,9 +30,17 @@
                     <td>
                         @if($post->categoryPosts)
                             @foreach($post->categoryPosts as $category_post)
-                                <div class="badge bg-secondary bg-opacity-50">
-                                    {{ $category_post->category->name }}
-                                </div>
+                                @if($category_post->category_id == 1)
+                                    <div class="badge bg-success bg-opacity-30">
+                                @elseif($category_post->category_id == 2)
+                                    <div class="badge bg-primary bg-opacity-30">
+                                @elseif($category_post->category_id == 3)
+                                    <div class="badge bg-warning bg-opacity-30">                
+                                @elseif($category_post->category_id == 4)
+                                    <div class="badge bg-danger bg-opacity-30">
+                                @endif    
+                                        <a href="{{ route('category.show', $category_post->category_id) }}" class="text-decoration-none text-white " >{{ $category_post->category->name }}</a>                
+                                    </div>
                             @endforeach
                         @else
                             <div class="badge bg-dark">Uncategorized</div>
