@@ -78,4 +78,7 @@
 @else 
     <p>---</p>
 @endif
-<p class="fw-light description">{{ $post->description }}</p>
+<p class="fw-light {{ $noClamp ?? false ? '' : 'description' }}">
+    {{ $post->description }}
+</p>
+

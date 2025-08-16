@@ -16,6 +16,11 @@
         .fa-heart{
             margin-top: 12px;
         }
+        .description{
+
+    overflow: hidden;
+
+}
 
     </style>
 
@@ -66,7 +71,7 @@
             <div class="card border-0">
                 @include('user.posts.contents.title')
                 <div class="card-body w-100 bg-white post-body">
-                    @include('user.posts.contents.body')
+                    @include('user.posts.contents.body', ['noClamp' => true])
 
                     {{-- COMMENTS --}}
                     @include('user.posts.contents.comments.create')
