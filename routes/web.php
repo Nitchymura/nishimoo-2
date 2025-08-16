@@ -34,6 +34,8 @@ Route::group(['middleware' => 'auth'], function(){
     Route::patch('/post/{id}/update', [PostController::class, 'update'])->name('post.update');
     Route::delete('/post/{id}/delete', [PostController::class, 'delete'])->name('post.delete');
     Route::delete('/image/{id}/delete/', [PostController::class, 'deleteImage'])->name('image.delete');
+    Route::delete('/post/{id}/deactivate', [PostController::class, 'deactivate'])->name('posts.deactivate');
+        Route::patch('/post/{id}/activate', [PostController::class, 'activate'])->name('posts.activate');
 
     Route::post('/comment/{post_id}/store', [CommentController::class, 'store'])->name('comment.store');
     Route::delete('comment/{id}/delete', [CommentController::class, 'delete'])->name('comment.delete');

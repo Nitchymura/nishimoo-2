@@ -345,7 +345,6 @@ class PostController extends Controller
 
         return response()->json(['message' => 'No Image found'], 404);
     }
-}
 
 
 
@@ -401,3 +400,20 @@ class PostController extends Controller
     // }
     //     return redirect()->route('home');
     // }
+
+    public function deactivate($id){
+        $this->post->destroy($id);
+        return redirect()->back();
+    }
+
+    public function activate($id){
+        $this->post->onlyTrashed()->findOrFail($id)->restore();
+        return redirect()->back();
+    }
+
+    public function delete($id){
+        // $this->post->destroy($id);
+        $this->post->findOrFail($id)->forceDelete();
+        return redirect()->route('home');
+    }
+}
