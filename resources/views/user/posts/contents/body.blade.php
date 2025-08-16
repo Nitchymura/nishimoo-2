@@ -57,6 +57,10 @@
                 <div class="badge bg-warning bg-opacity-30">                
             @elseif($category_post->category_id == 4)
                 <div class="badge bg-danger bg-opacity-30">
+            @elseif($category_post->category_id == 5)
+                <div class="badge bg-info bg-opacity-30">
+            @else
+                <div class="badge bg-secondary bg-opacity-30">
             @endif    
                     <a href="{{ route('category.show', $category_post->category_id) }}" class="text-decoration-none text-white " >{{ $category_post->category->name }}</a>                
                 </div>

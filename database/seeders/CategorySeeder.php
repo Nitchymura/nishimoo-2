@@ -17,21 +17,25 @@ class CategorySeeder extends Seeder
 
         $categories = [
             [
-                'name' => 'Travel',
+            //     'name' => 'Travel',
+            //     'updated_at' => NOW(),
+            //     'created_at' => NOW()
+            // ],[
+            //     'name' => 'Figure Skate',
+            //     'updated_at' => NOW(),
+            //     'created_at' => NOW()
+            // ],[
+            //     'name' => 'Beer',
+            //     'updated_at' => NOW(),
+            //     'created_at' => NOW()
+            // ],[
+                'name' => 'Animal',
                 'updated_at' => NOW(),
                 'created_at' => NOW()
-            ],[
-                'name' => 'Figure Skate',
-                'updated_at' => NOW(),
-                'created_at' => NOW()
-            ],[
-                'name' => 'Beer',
-                'updated_at' => NOW(),
-                'created_at' => NOW()
-            ],[
-                'name' => 'Others',
-                'updated_at' => NOW(),
-                'created_at' => NOW()
+            // ],[
+            //     'name' => 'Others',
+            //     'updated_at' => NOW(),
+            //     'created_at' => NOW()
             ]
         ];
         Category::insert($categories);

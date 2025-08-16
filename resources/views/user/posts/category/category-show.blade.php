@@ -15,6 +15,8 @@
                 <span class="badge bg-warning bg-opacity-30">                
             @elseif($category->id == 4)
                 <span class="badge bg-danger bg-opacity-30 mb-2">
+            @else
+                <span class="badge bg-secondary bg-opacity-30 mb-2">
             @endif {{$category->name}}</span></h4>       
     </div>
 </div>
