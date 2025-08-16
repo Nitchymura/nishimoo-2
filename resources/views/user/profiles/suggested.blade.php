@@ -11,11 +11,11 @@
         @forelse($suggested_users as $user)
             <div class="row mb-3">
                 <div class="col-auto my-auto">
-                    <a href="{{ route('profile.show', $user->id) }}">
+                    <a href="{{ route('profile.show', $user->id) }}" class="text-decoration-none">
                     @if($user->avatar)
                         <img src="{{ $user->avatar }}" alt="" class="rounded-circle avatar-md d-block mx-auto">
                     @else
-                        <i class="fa-solid fa-circle-user text-secondary icon-md d-block text-center"></i>
+                        <i class="fa-solid fa-circle-user text-secondary  icon-md d-block text-center"></i>
                     @endif
                     </a>
                 </div>
