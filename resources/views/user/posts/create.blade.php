@@ -84,7 +84,7 @@
 
         @include('user.posts.contents.photos.photos')
        
-        <button type="submit" class="btn btn-primary mt-4 px-4">Post</button>
+        <button type="submit" class="btn btn-primary mt-4 px-4 w-25">Post</button>
     </div>
     </form>
 

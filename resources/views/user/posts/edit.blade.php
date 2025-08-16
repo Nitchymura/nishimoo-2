@@ -112,7 +112,7 @@
                 </p>
         </div> --}}
 
-        <button type="submit" class="btn btn-warning mt-4 px-4">Save</button>
+        <button type="submit" class="btn btn-warning mt-4 px-4 w-25">Save</button>
     </div>
 
     </form>
