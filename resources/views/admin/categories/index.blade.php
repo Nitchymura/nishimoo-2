@@ -31,7 +31,7 @@
                 <tr>
                     <td>{{ $category->id }}</td>
                     <td>
-                        {{ $category->name }}
+                        <a href="{{ route('category.show', $category->id) }}" class="text-decoration-none text-dark fw-bold" >{{ $category->name }}</a> 
                     </td>
                     <td>
                        {{ $category->categoryPosts->count() }}
