@@ -35,7 +35,8 @@ Route::group(['middleware' => 'auth'], function(){
     Route::delete('/post/{id}/delete', [PostController::class, 'delete'])->name('post.delete');
     Route::delete('/image/{id}/delete/', [PostController::class, 'deleteImage'])->name('image.delete');
     Route::delete('/post/{id}/deactivate', [PostController::class, 'deactivate'])->name('posts.deactivate');
-        Route::patch('/post/{id}/activate', [PostController::class, 'activate'])->name('posts.activate');
+    Route::patch('/post/{id}/activate', [PostController::class, 'activate'])->name('posts.activate');
+    Route::post('/post/{id}/toggle-like', [PostController::class, 'toggleLike'])->name('post.toggleLike');
 
     Route::post('/comment/{post_id}/store', [CommentController::class, 'store'])->name('comment.store');
     Route::delete('comment/{id}/delete', [CommentController::class, 'delete'])->name('comment.delete');
@@ -66,6 +67,8 @@ Route::group(['middleware' => 'auth'], function(){
     //Follow
     Route::post('/follow/{user_id}/store', [FollowController::class, 'store'])->name('follow.store');
     Route::delete('/follow/{user_id}/delete', [FollowController::class, 'delete'])->name('follow.delete');
+    Route::post('/users/{user}/toggle-follow', [FollowController::class, 'toggleFollow'])
+    ->name('follow.toggle');
 
     //ADMIN
     route::group(['prefix'=> 'admin', 'as' => 'admin.' , 'middleware' => 'admin'],function(){

@@ -16,15 +16,20 @@
                 {{ $post->user->name }}
             </a>
         </div>
+
+
         <div class="col-auto">
             {{-- buttons --}}
-            <div class="dropdown">
+            {{-- <div class="dropdown">
                 <button class="btn btn-sm" data-bs-toggle="dropdown">
                     <i class="fa-solid fa-ellipsis"></i>
-                </button>
-
+                </button> --}}
             @auth
                 @if($post->user_id == Auth::user()->id)
+                <div class="dropdown">
+                    <button class="btn btn-sm" data-bs-toggle="dropdown">
+                        <i class="fa-solid fa-ellipsis"></i>
+                    </button>
                     <div class="dropdown-menu">
                         {{-- edit--}}
                         <a href="{{ route('post.edit', $post->id) }}" class="dropdown-item">
@@ -35,28 +40,47 @@
                             <i class="fa-regular fa-trash-can"></i> Delete
                         </button>
                     </div>  
+                </div>    
                     @include('user.posts.contents.modals.delete')  
                 @else
-                    @if($post->user->isFollowed())
-                        {{-- unfollow --}}
-                        <div class="dropdown-menu">
+                    {{-- @if($post->user->isFollowed())
+                        <!-- unfollow -->
+                        <div class="">
                             <form action="{{ route('follow.delete', $post->user->id) }}" method="post">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="dropdown-item text-danger">Unfollow</button>
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">Unfollow</button>
                             </form>
                         </div>
                     @else
-                          <div class="dropdown-menu">
+                          <div class="">
                             <form action="{{ route('follow.store', $post->user->id) }}" method="post">
                                 @csrf
-                                <button type="submit" class="dropdown-item text-primary">Follow</button>
+                                <button type="submit" class="btn btn-sm btn-primary">Follow</button>
                             </form>
                         </div>
-                    @endif 
+                    @endif  --}}
+
+                    @php
+                    $isFollowing = \App\Models\Follow::where('follower_id', Auth::id())
+                                    ->where('followed_id', $post->user->id)
+                                    ->exists();
+                    @endphp
+                    <div>
+                        <form action="{{ route('follow.toggle', $post->user->id) }}"
+                            method="POST"
+                            data-user-id="{{ $post->user->id }}"
+                            class="follow-form">
+                        @csrf
+                        <button type="button"
+                                class="btn btn-sm follow-btn {{ $isFollowing ? 'btn-outline-secondary' : 'btn-primary' }}">
+                            <span class="label">{{ $isFollowing ? 'Following' : 'Follow' }}</span>
+                        </button>
+                        </form>
+                    </div>
                 @endif
             @endauth
-            </div>
+            {{-- </div> --}}
         </div>
         
     </div>

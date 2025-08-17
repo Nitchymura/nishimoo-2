@@ -136,5 +136,8 @@
             
         </main>
     </div>
+<script src="{{ asset('js/post-like.js') }}" defer></script>
+<script src="{{ asset('js/follow.js') }}" defer></script>
+@stack('scripts')
 </body>
 </html>

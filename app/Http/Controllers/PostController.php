@@ -11,6 +11,7 @@ use App\Models\Post;
 use App\Models\Category;
 use App\Models\CategoryPost;
 use App\Models\PostBody;
+use App\Models\Like;
 
 
 class PostController extends Controller
@@ -18,11 +19,13 @@ class PostController extends Controller
     private $category;
     private $post;
     private $post_body;
+    private $like;
 
-    public function __construct(Category $category, Post $post, PostBody $post_body){
+    public function __construct(Category $category, Post $post, PostBody $post_body, Like $like){
         $this->category = $category;
         $this->post = $post;
         $this->post_body = $post_body;
+        $this->like = $like;
     }
     
     public function create(){
@@ -38,8 +41,8 @@ class PostController extends Controller
         'description'  => ['required','string','max:1000'],
         'term_start'   => ['nullable','date'],
         'term_end'     => ['nullable','date','after_or_equal:term_start'],
-        'image'        => ['required','image','mimes:jpg,jpeg,png,gif','max:800'],     // メイン必須のまま
-        'photos.*.*'   => ['nullable','image','mimes:jpg,jpeg,png,gif','max:800'],    // ← 2段配列対応（photos[new][i]）
+        'image'        => ['required','image','mimes:jpg,jpeg,png,gif','max:1500'],     // メイン必須のまま
+        'photos.*.*'   => ['nullable','image','mimes:jpg,jpeg,png,gif','max:2048'],    // ← 2段配列対応（photos[new][i]）
     ]);
 
     DB::transaction(function () use ($request) {
@@ -98,66 +101,6 @@ class PostController extends Controller
 }
 
 
-//     public function store(Request $request)
-// {
-//     $request->validate([
-//         'categories' => 'required|array|between:1,3',
-//         'title' => 'required',
-//         'description' => 'required|max:1000',
-//         'image' => 'required|max:1048|mimes:jpg,jpeg,png,gif',
-//         'photos.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120'
-//     ]);
-
-//     // Postの作成
-//     $post = new Post();
-//     $post->description = $request->description;
-//     $post->title = $request->title;
-//     $post->term_start = $request->term_start;
-//     $post->term_end = $request->term_end;
-//     $post->user_id = Auth::user()->id;
-//     $post->image = "data:image/".$request->image->extension().";base64,".base64_encode(file_get_contents($request->image));
-//     $post->save();
-
-//     // カテゴリの保存
-//     foreach ($request->categories as $category_id) {
-//         CategoryPost::create([
-//             'category_id' => $category_id,
-//             'post_id' => $post->id
-//         ]);
-//     }
-
-//     // 画像がアップロードされている場合、PostBodyController にリダイレクト
-//     // if ($request->hasFile('photo')) {
-//     //     return redirect()->route('post.body.store', ['post_id' => $post->id])->with('photo', $request->file('photo'));
-//     // }
-
-//     if ($request->hasFile('photos')) {
-//         foreach ($request->file('photos') as $i => $photo) {
-//             if ($photo) {
-//                 // 画像ファイルの内容を読み込む
-//                 $fileContent = file_get_contents($photo->getRealPath());
-
-//                 // MIMEタイプを取得（例：image/jpeg）
-//                 $mimeType = $photo->getMimeType();
-
-//                 // Base64エンコードしてデータURLを作成
-//                 $base64Image = 'data:' . $mimeType . ';base64,' . base64_encode($fileContent);
-
-//                 // 優先度の設定
-//                 $priority = $request->input("priorities.$i") ?? ($i + 1);
-
-//                 // データベースに保存
-//                 PostBody::create([
-//                     'post_id' => $post->id,
-//                     'photo' => $base64Image,  // Base64形式で保存
-//                     'priority' => $priority,
-//                 ]);
-//             }
-//         }
-//     }
-
-//     return redirect()->route('home');
-// }
 
 
     public function show($id){
@@ -193,8 +136,8 @@ class PostController extends Controller
         'description'  => ['required','string','max:1000'],
         'term_start'   => ['nullable','date'],
         'term_end'     => ['nullable','date','after_or_equal:term_start'],
-        'image'        => ['nullable','image','mimes:jpg,jpeg,png,gif','max:800'],
-        'photos.*.*'   => ['nullable','image','mimes:jpg,jpeg,png,gif','max:800'],
+        'image'        => ['nullable','image','mimes:jpg,jpeg,png,gif','max:1500'],
+        'photos.*.*'   => ['nullable','image','mimes:jpg,jpeg,png,gif','max:2048'],
     ]);
 
     $post = Post::findOrFail($id);
@@ -263,7 +206,7 @@ class PostController extends Controller
         }
     });
 
-    return redirect()->route('home')->with('status', 'Post updated successfully.');
+    return redirect()->route('post.show', $post->id)->with('status', 'Post updated successfully.');
     }
 
     private function gdCompressToDataUrl(\Illuminate\Http\UploadedFile $file, int $maxWidth = 1600, int $quality = 78): string
@@ -346,8 +289,56 @@ class PostController extends Controller
         return response()->json(['message' => 'No Image found'], 404);
     }
 
+    public function toggleLike($id){
+    $user = Auth::user();
+    if (!$user) {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    // 存在しなければ404
+    $post = Post::findOrFail($id);
+
+    // すでにLikeしているかを軽量に確認
+    $exists = $post->likes()->where('user_id', $user->id)->exists();
+
+    if ($exists) {
+        // 取り消し
+        $post->likes()->where('user_id', $user->id)->delete();
+        $liked = false;
+    } else {
+        // 付与（リレーション経由）
+        $post->likes()->create(['user_id' => $user->id]);
+        $liked = true;
+    }
+
+    // 最新件数を返す
+    $count = $post->likes()->count();
+
+    return response()->json([
+        'liked' => $liked,
+        'like_count' => $count,
+    ]);
+}
 
 
+
+
+    public function deactivate($id){
+        $this->post->destroy($id);
+        return redirect()->back();
+    }
+
+    public function activate($id){
+        $this->post->onlyTrashed()->findOrFail($id)->restore();
+        return redirect()->back();
+    }
+
+    public function delete($id){
+        // $this->post->destroy($id);
+        $this->post->findOrFail($id)->forceDelete();
+        return redirect()->route('home');
+    }
+}
 // public function update(Request $request, $id){
     //     $request->validate([
     //         'categories' => 'required|array|between:1,3',
@@ -401,19 +392,63 @@ class PostController extends Controller
     //     return redirect()->route('home');
     // }
 
-    public function deactivate($id){
-        $this->post->destroy($id);
-        return redirect()->back();
-    }
+    //     public function store(Request $request)
+// {
+//     $request->validate([
+//         'categories' => 'required|array|between:1,3',
+//         'title' => 'required',
+//         'description' => 'required|max:1000',
+//         'image' => 'required|max:1048|mimes:jpg,jpeg,png,gif',
+//         'photos.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120'
+//     ]);
 
-    public function activate($id){
-        $this->post->onlyTrashed()->findOrFail($id)->restore();
-        return redirect()->back();
-    }
+//     // Postの作成
+//     $post = new Post();
+//     $post->description = $request->description;
+//     $post->title = $request->title;
+//     $post->term_start = $request->term_start;
+//     $post->term_end = $request->term_end;
+//     $post->user_id = Auth::user()->id;
+//     $post->image = "data:image/".$request->image->extension().";base64,".base64_encode(file_get_contents($request->image));
+//     $post->save();
 
-    public function delete($id){
-        // $this->post->destroy($id);
-        $this->post->findOrFail($id)->forceDelete();
-        return redirect()->route('home');
-    }
-}
+//     // カテゴリの保存
+//     foreach ($request->categories as $category_id) {
+//         CategoryPost::create([
+//             'category_id' => $category_id,
+//             'post_id' => $post->id
+//         ]);
+//     }
+
+//     // 画像がアップロードされている場合、PostBodyController にリダイレクト
+//     // if ($request->hasFile('photo')) {
+//     //     return redirect()->route('post.body.store', ['post_id' => $post->id])->with('photo', $request->file('photo'));
+//     // }
+
+//     if ($request->hasFile('photos')) {
+//         foreach ($request->file('photos') as $i => $photo) {
+//             if ($photo) {
+//                 // 画像ファイルの内容を読み込む
+//                 $fileContent = file_get_contents($photo->getRealPath());
+
+//                 // MIMEタイプを取得（例：image/jpeg）
+//                 $mimeType = $photo->getMimeType();
+
+//                 // Base64エンコードしてデータURLを作成
+//                 $base64Image = 'data:' . $mimeType . ';base64,' . base64_encode($fileContent);
+
+//                 // 優先度の設定
+//                 $priority = $request->input("priorities.$i") ?? ($i + 1);
+
+//                 // データベースに保存
+//                 PostBody::create([
+//                     'post_id' => $post->id,
+//                     'photo' => $base64Image,  // Base64形式で保存
+//                     'priority' => $priority,
+//                 ]);
+//             }
+//         }
+//     }
+
+//     return redirect()->route('home');
+// }

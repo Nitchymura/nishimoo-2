@@ -2,8 +2,8 @@
     <div class="col-auto">
         {{-- like/heart button --}}
         @auth
-            @if($post->isLiked())
-                {{-- red heart/unlike --}}
+            {{-- @if($post->isLiked())
+                <!-- red heart/unlike -->
                 <form action="{{route('like.delete', $post->id)}}" method="post">
                     @csrf
                     @method('DELETE')
@@ -20,7 +20,19 @@
                     </button>
                 </form>
                 @endauth
-            @endif
+            @endif --}}
+
+            <form action="{{ route('post.toggleLike', $post->id) }}"
+                method="POST"
+                data-post-id="{{ $post->id }}"
+                class="like-post-form">
+                @csrf
+                <button type="button" class="btn btn-sm shadow-none post-like-btn">
+                    <i class="{{ $post->likes->where('user_id', Auth::id())->isNotEmpty() ? 'fa-solid text-danger' : 'fa-regular' }} fa-heart"></i>
+                    &nbsp;<span class="post-like-count" data-post-id="{{ $post->id }}">{{ $post->likes->count() }}</span>
+                </button>
+            </form>
+
         @else
             <button type="sumbit" class="btn p-0" data-bs-toggle="modal" data-bs-target="#heart-icon">
                 <i class="fa-regular fa-heart"></i>&nbsp;  {{ $post->likes->count() }}
@@ -85,4 +97,8 @@
 <p class="fw-light {{ $noClamp ?? false ? '' : 'description' }}">
     {{ $post->description }}
 </p>
+{{-- 
+@pushOnce('scripts')
+<script src="{{ asset('js/post-like.js') }}"></script>
+@endPushOnce --}}
 
