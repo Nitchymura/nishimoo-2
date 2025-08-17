@@ -32,7 +32,7 @@ class ProfileController extends Controller
 
     public function update(Request $request){
         $request->validate([
-            'avatar' => 'max:1048|mimes:jpeg,jpg,png,gif',
+            'avatar' => 'max:2048|mimes:jpeg,jpg,png,gif',
             'name' => 'required|max:50',
             'email' => 'required|max:50|email|unique:users,email,'.Auth::user()->id,
             'introduction' => 'max:1500'
