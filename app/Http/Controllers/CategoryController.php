@@ -23,7 +23,7 @@ class CategoryController extends Controller
         $all_categories = $this->category->all();
         $category_a = $this->category->findOrFail($id); 
         $all_posts = $category_a->posts()
-        ->latest('posts.created_at')   // 並び順（任意）
+        ->latest('posts.term_start')   // 並び順（任意）
         ->with(['user','postBodies'])      // 必要ならEager Load
         ->paginate(9);
 
