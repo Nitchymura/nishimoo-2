@@ -20,12 +20,13 @@ class CategoryController extends Controller
     }
 
     public function show($id){
+        $all_categories = $this->category->all();
         $category_a = $this->category->findOrFail($id); 
         $all_posts = $category_a->posts()
         ->latest('posts.created_at')   // 並び順（任意）
         ->with(['user','postBodies'])      // 必要ならEager Load
         ->paginate(9);
 
-        return view('user.posts.category.category-show')->with('category', $category_a)->with('all_posts', $all_posts);                                   
+        return view('user.posts.category.category-show')->with('all_categories', $all_categories)->with('all_posts', $all_posts)->with('category', $category_a);                                   
     }
 }

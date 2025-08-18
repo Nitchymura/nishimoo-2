@@ -5,26 +5,30 @@
 @section('content')
 
 <div class="row justify-content-center mt-5 pt-5" >
-    <div class="col " >
-        <h3 class="h1 text-start text-secondary fw-bold mb-4"> 
-            @if($category->id == 1)
-                <span class="badge bg-success bg-opacity-30 mb-2">
-            @elseif($category->id == 2)
-                <span class="badge bg-primary bg-opacity-30mb-2">
-            @elseif($category->id == 3)
-                <span class="badge bg-warning bg-opacity-30">                
-            @elseif($category->id == 4)
-                <span class="badge bg-danger bg-opacity-30 mb-2">
-            @elseif($category->id == 5)
-                <span class="badge bg-info bg-opacity-30 mb-2">
-            @else
-                <span class="badge bg-secondary bg-opacity-30 mb-2">
-            @endif {{$category->name}}</span></h4>       
-    </div>
+    <div class="d-flex gap-3 align-items-end mb-4 pb-2">
+        @foreach($all_categories as $cat)
+            @php
+                // カラーをカテゴリごとに切り替える
+                $badgeClass = match($cat->id) {
+                    1 => 'bg-success',
+                    2 => 'bg-primary',
+                    3 => 'bg-warning',
+                    4 => 'bg-danger',
+                    5 => 'bg-info',
+                    default => 'bg-secondary',
+                };
+            @endphp
+
+            <span class="badge {{ $badgeClass }} 
+                {{ $category->id == $cat->id ? 'fs-4 fw-bold ' : 'fs-6 bg-opacity-10 ' }}" >
+                <a href="{{ route('category.show', $cat->id) }}" class="text-decoration-none text-white">{{ $cat->name }}</a>
+            </span>
+        @endforeach
+    </div>      
 </div>
 
     <div class="row gx-5">
-    @foreach($all_posts as $post)
+    @forelse($all_posts as $post)
         <div class="col-lg-4 col-md-6 col-sm-12 px-2">
             <div class="card mb-4">
                 <!-- title -->
@@ -58,7 +62,9 @@
                 </div>
             </div>
         </div>
-    @endforeach
+    @empty
+        <h4 class="h5 text-start text-secondary">No posts in this category.</h4>
+    @endforelse
     </div>
                 <div class="d-flex justify-content-end">
                 {{ $all_posts->links() }}
